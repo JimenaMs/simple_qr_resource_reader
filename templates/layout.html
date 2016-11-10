@@ -11,7 +11,7 @@
       <nav>
         <div class="nav-wrapper">
           {% if resource %}
-            <a href="#" class="brand-logo center">{{ resource['id'] }}</a>
+            <a href="#" class="brand-logo center">{{ resource['resource_id'] }}</a>
           {% else %}
             <a href="#" class="brand-logo center">Tickets Abiertos</a>
           {% endif %}
@@ -23,6 +23,7 @@
     </div>
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block javascript %}{% endblock %}
   </body>
 </html>
