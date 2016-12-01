@@ -6,7 +6,7 @@ function loadAllTickets() {
     console.log(data);
     var html = '';
     for (var i = data.length - 1; i >= 0; i--) {
-      html += '<div class="col s12 m6">';
+      html += '<div class="col s12">';
       html += '<div class="card blue-grey darken-1">';
       html += '<div class="card-content white-text">';
       html += '<span class="card-title">' + data[i].title + '</span>';

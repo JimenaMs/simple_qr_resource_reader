@@ -5,6 +5,7 @@ from flask import jsonify
 from flask import request
 from models import User, Resource, Ticket, db
 from uuid import uuid4
+import yagmail
 import StringIO
 import qrcode
 import yaml
@@ -16,6 +17,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = cfg['mysql_connect_string']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
+
+yag = yagmail.SMTP(cfg['gmail']['username'], cfg['gmail']['password'])
 
 @app.route("/qr/<id>")
 def generate_qr_code(id):
@@ -30,7 +33,10 @@ def generate_qr_code(id):
 
 @app.route("/")
 def hello():
-  return render_template('landing.html')
+  resources = []
+  for resource in Resource.query.all():
+    resources.append(resource.to_dict())
+  return render_template('landing.html', resources=resources)
 
 @app.route("/<id>")
 def resource(id):
@@ -44,7 +50,7 @@ def resource(id):
 def get_resources():
   resources = []
   for resource in Resource.query.all():
-    resource.append(resource.to_dict())
+    resources.append(resource.to_dict())
   return jsonify(resources)
 
 @app.route("/api/resources", methods = ['POST'])
@@ -72,7 +78,21 @@ def get_tickets(id):
 @app.route("/api/resources/<id>/tickets", methods = ['POST'])
 def create_ticket(id):
   json = request.get_json()
-  ticket = Ticket(uuid4(), json['title'], json['description'], json['reporter'], json['asignee'], 'open', id)
+  reporter = User.query.filter_by(username=json['reporter'].lower()).first()
+  asignee = User.query.filter_by(username=json['asignee'].lower()).first()
+  if reporter == None or asignee == None:
+    return jsonify({'error': 'bad request'}), 400
+  ticket = Ticket(uuid4(), json['title'], json['description'], reporter.user_id, asignee.user_id, 'open', id)
+
+  mail = reporter.username + ' le ha asignado un ticket a ' + asignee.username + ', revisalo en http://' + cfg['host'] + ':' + str(cfg['port']) + '/' + id
+  recipients = [str(asignee.email), str(reporter.email)]
+  subject = str('Nuevo ticket sobre ' + id)
+
+  print recipients
+  print subject
+  print mail
+  yag.send(to = recipients, subject = subject, contents = [mail, ticket.description])
+
   db.session.add(ticket)
   db.session.commit()
   return jsonify(ticket.to_dict())

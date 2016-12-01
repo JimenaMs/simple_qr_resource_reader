@@ -2,3 +2,7 @@ port: 9000
 host: REPLACE_ME
 debug: false
 mysql_connect_string: REPLACE_ME
+
+gmail:
+  username: REPLACE_ME
+  password: REPLACE_ME

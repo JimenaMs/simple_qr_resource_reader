@@ -6,7 +6,19 @@
     <a class="waves-effect waves-light btn" href="#modal1">Agregar Dispositivo</a>
   </div>
   <div class="row">
-    <div id="tickets">
+    <div class="col s6">
+      <div id="tickets">
+      </div>
+    </div>
+    <div class="col s6">
+      <h2>Dispositivos</h2>
+      <div class="collection">
+        {% for resource in resources %}
+          <a class="collection-item" href="/{{ resource.resource_id }}">
+            {{ resource.resource_id }} - {{ resource.name }}
+          </a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 
