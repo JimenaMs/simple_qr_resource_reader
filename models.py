@@ -28,10 +28,22 @@ class Resource(db.Model):
   """docstring for Resource"""
   resource_id = db.Column(db.String(36), primary_key=True)
   name = db.Column(db.String(50))
+  owner = db.Column(db.String(40))
+  model = db.Column(db.String(25))
+  brand = db.Column(db.String(25))
+  series = db.Column(db.String(30))
+  area = db.Column(db.String(20))
+  subarea = db.Column(db.String(20))
 
   def __init__(self, resource_id, name):
     self.resource_id = resource_id
     self.name = name
+    self.owner = owner
+    self.model = model
+    self.brand = brand
+    self.series = series
+    self.area = area
+    self.subarea = subarea
 
   def __repr__(self):
     return '<Resource %s>' % self.resource_id
@@ -39,7 +51,13 @@ class Resource(db.Model):
   def to_dict(self):
     return {
       'resource_id': self.resource_id,
-      'name': self.name
+      'name': self.name,
+      'owner': self.owner,
+      'model': self.model,
+      'brand': self.brand,
+      'series': self.series,
+      'area': self.area,
+      'subarea': self.subarea
     }
 
 

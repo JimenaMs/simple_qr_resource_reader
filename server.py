@@ -19,6 +19,8 @@ db.init_app(app)
 
 @app.route("/qr/<id>")
 def generate_qr_code(id):
+  if Resource.query.filter_by(resource_id=id).first() == None:
+    return 'Not Found!', 404
   img = qrcode.make('http://' + cfg['host'] + ':' + str(cfg['port']) + '/' + id)
   base_64_img = StringIO.StringIO()
   img.save(base_64_img, 'PNG')
@@ -99,4 +101,4 @@ def create_user():
   return jsonify(user.to_dict())
 
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', debug=cfg['debug'], port=cfg['port'])
+    app.run(host='0.0.0.0', debug=cfg['debug'], port=cfg['port'])
