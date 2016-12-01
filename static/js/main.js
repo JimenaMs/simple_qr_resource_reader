@@ -78,7 +78,7 @@ function createTicket() {
     loadTickets();
   }).error(function(data) {
     console.log(data);
-    Materialize.toast('No se pudó guardar el ticket', 4000)
+    Materialize.toast('No se pudo guardar el ticket', 4000)
   });
 }
 

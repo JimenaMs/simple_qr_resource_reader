@@ -18,8 +18,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = cfg['mysql_connect_string']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
-yag = yagmail.SMTP(cfg['gmail']['username'], cfg['gmail']['password'])
-
 @app.route("/qr/<id>")
 def generate_qr_code(id):
   if Resource.query.filter_by(resource_id=id).first() == None:
@@ -87,6 +85,8 @@ def create_ticket(id):
   mail = reporter.username + ' le ha asignado un ticket a ' + asignee.username + ', revisalo en http://' + cfg['host'] + ':' + str(cfg['port']) + '/' + id
   recipients = [str(asignee.email), str(reporter.email)]
   subject = str('Nuevo ticket sobre ' + id)
+
+  yag = yagmail.SMTP(cfg['gmail']['username'], cfg['gmail']['password'])
 
   yag.send(to = recipients, subject = subject, contents = [mail, ticket.description])
 
