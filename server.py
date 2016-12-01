@@ -82,15 +82,12 @@ def create_ticket(id):
   asignee = User.query.filter_by(username=json['asignee'].lower()).first()
   if reporter == None or asignee == None:
     return jsonify({'error': 'bad request'}), 400
-  ticket = Ticket(uuid4(), json['title'], json['description'], reporter.user_id, asignee.user_id, 'open', id)
+  ticket = Ticket(uuid4(), json['title'], json['description'], reporter.username, asignee.username, 'open', id)
 
   mail = reporter.username + ' le ha asignado un ticket a ' + asignee.username + ', revisalo en http://' + cfg['host'] + ':' + str(cfg['port']) + '/' + id
   recipients = [str(asignee.email), str(reporter.email)]
   subject = str('Nuevo ticket sobre ' + id)
 
-  print recipients
-  print subject
-  print mail
   yag.send(to = recipients, subject = subject, contents = [mail, ticket.description])
 
   db.session.add(ticket)
